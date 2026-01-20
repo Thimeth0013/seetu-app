@@ -30,8 +30,8 @@ const SeetuSchema = new Schema<ISeetu>(
       type: Date,
       required: [true, 'Closing date is required'],
       validate: {
-        validator: function (this: ISeetu, closingDate: Date) {
-          return closingDate > this.openingDate;
+        validator: function (closingDate: Date) {
+          return closingDate > (this as any).openingDate;
         },
         message: 'Closing date must be after opening date',
       },
