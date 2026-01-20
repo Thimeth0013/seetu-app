@@ -152,11 +152,16 @@ export async function GET(
     // Get total count for pagination
     const totalCount = await Placement.countDocuments({ seetuId: seetuId });
 
+    // getAuthUser is already available
+    const user = await getAuthUser(request);
+
     // Format response
     const result = placements.map((p) => ({
       id: p._id.toString(),
       user: (p.userId as any).username,
-      amount: isClosed ? p.amount : undefined, // Hide amount until seetu closes
+      amount: isClosed || (user && user.username === (p.userId as any).username)
+              ? p.amount
+              : undefined, // Hide amount for others
       createdAt: p.createdAt,
     }));
 
