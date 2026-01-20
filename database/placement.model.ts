@@ -26,99 +26,101 @@ const PlacementSchema = new Schema<IPlacement>(
     amount: {
       type: Number,
       required: [true, 'Amount is required'],
-      min: [1, 'Amount must be greater than 0'],
+      min: [0.01, 'Amount must be greater than 0'],
     },
   },
   {
-    timestamps: true, // Auto-generate createdAt and updatedAt
+    timestamps: true,
   }
 );
 
-// Pre-save hook to validate seetu and user exist, and amount is within limits
+//Pre-save validation
 PlacementSchema.pre('save', async function () {
   const placement = this as IPlacement;
 
-  // Validate seetu exists and get min/max limits
-  if (placement.isModified('seetuId') || placement.isNew) {
+  // Load seetu when creating or updating amount
+  if (placement.isNew || placement.isModified('amount')) {
+    let seetu;
+
     try {
-      const seetu = await Seetu.findById(placement.seetuId).select('minAmount maxAmount openingDate closingDate');
+      seetu = await Seetu.findById(placement.seetuId).select(
+        'minAmount maxAmount openingDate closingDate'
+      );
+    } catch {
+      const err = new Error('Invalid seetu ID format');
+      err.name = 'ValidationError';
+      throw err;
+    }
 
-      if (!seetu) {
-        const error = new Error(`Seetu with ID ${placement.seetuId} does not exist`);
-        error.name = 'ValidationError';
-        throw error;
-      }
+    if (!seetu) {
+      const err = new Error('Seetu does not exist');
+      err.name = 'ValidationError';
+      throw err;
+    }
 
-      // Check if seetu is open (only on new placements, not updates)
-      const now = new Date();
-      if (placement.isNew) {
-        if (now < seetu.openingDate) {
-          const error = new Error('Cannot place amount before seetu opens');
-          error.name = 'ValidationError';
-          throw error;
-        }
-        if (now >= seetu.closingDate) {
-          const error = new Error('Cannot place amount after seetu closes');
-          error.name = 'ValidationError';
-          throw error;
-        }
-      }
+    const now = new Date();
 
-      // Validate amount against min/max limits
-      if (seetu.minAmount && placement.amount < seetu.minAmount) {
-        const error = new Error(`Amount must be at least ${seetu.minAmount} LKR`);
-        error.name = 'ValidationError';
-        throw error;
-      }
+    if (now < seetu.openingDate) {
+      const err = new Error('Seetu has not opened yet');
+      err.name = 'ValidationError';
+      throw err;
+    }
 
-      if (seetu.maxAmount && placement.amount > seetu.maxAmount) {
-        const error = new Error(`Amount cannot exceed ${seetu.maxAmount} LKR`);
-        error.name = 'ValidationError';
-        throw error;
-      }
-    } catch (err) {
-      if (err instanceof Error && err.name === 'ValidationError') {
-        throw err;
-      }
-      const validationError = new Error('Invalid seetu ID format or database error');
-      validationError.name = 'ValidationError';
-      throw validationError;
+    if (now >= seetu.closingDate) {
+      const err = new Error('Seetu is already closed');
+      err.name = 'ValidationError';
+      throw err;
+    }
+
+    if (seetu.minAmount && placement.amount < seetu.minAmount) {
+      const err = new Error(`Amount must be at least ${seetu.minAmount}`);
+      err.name = 'ValidationError';
+      throw err;
+    }
+
+    if (seetu.maxAmount && placement.amount > seetu.maxAmount) {
+      const err = new Error(`Amount cannot exceed ${seetu.maxAmount}`);
+      err.name = 'ValidationError';
+      throw err;
     }
   }
 
   // Validate user exists
-  if (placement.isModified('userId') || placement.isNew) {
-    try {
-      const userExists = await User.findById(placement.userId).select('_id');
+  if (placement.isNew || placement.isModified('userId')) {
+    let userExists;
 
-      if (!userExists) {
-        const error = new Error(`User with ID ${placement.userId} does not exist`);
-        error.name = 'ValidationError';
-        throw error;
-      }
-    } catch (err) {
-      if (err instanceof Error && err.name === 'ValidationError') {
-        throw err;
-      }
-      const validationError = new Error('Invalid user ID format or database error');
-      validationError.name = 'ValidationError';
-      throw validationError;
+    try {
+      userExists = await User.findById(placement.userId).select('_id');
+    } catch {
+      const err = new Error('Invalid user ID format');
+      err.name = 'ValidationError';
+      throw err;
+    }
+
+    if (!userExists) {
+      const err = new Error('User does not exist');
+      err.name = 'ValidationError';
+      throw err;
     }
   }
 });
 
-// Create index on seetuId for faster queries
+// One placement per user per seetu
+PlacementSchema.index(
+  { seetuId: 1, userId: 1 },
+  { unique: true, name: 'uniq_seetu_user' }
+);
+
+// Fast lookup by seetu
 PlacementSchema.index({ seetuId: 1 });
 
-// Create index on userId for user's placements lookup
+// Fast lookup by user
 PlacementSchema.index({ userId: 1 });
 
-// Create compound index for seetu placements sorted by update time (for tie-breaking)
-PlacementSchema.index({ seetuId: 1, updatedAt: 1 });
+// Final leaderboard ordering (after close)
+PlacementSchema.index({ seetuId: 1, amount: -1, createdAt: 1 });
 
-// Enforce one placement per user per seetu
-PlacementSchema.index({ seetuId: 1, userId: 1 }, { unique: true, name: 'uniq_seetu_user' });
-
-const Placement = models.Placement || model<IPlacement>('Placement', PlacementSchema);
+const Placement =
+  models.Placement || model<IPlacement>('Placement', PlacementSchema);
 
 export default Placement;
