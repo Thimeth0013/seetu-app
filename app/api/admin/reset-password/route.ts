@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Remove the bcrypt.hash here - let updateUserPassword handle it
     await updateUserPassword(userId, newPassword);
 
     return NextResponse.json(
