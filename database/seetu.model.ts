@@ -9,6 +9,7 @@ export interface ISeetu extends Document {
   minAmount?: number;
   maxAmount?: number;
   createdBy: Types.ObjectId;
+  archived: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,6 +32,7 @@ const SeetuSchema = new Schema<ISeetu>(
       required: [true, 'Closing date is required'],
       validate: {
         validator: function (closingDate: Date) {
+          // Access the document context
           return closingDate > (this as any).openingDate;
         },
         message: 'Closing date must be after opening date',
@@ -40,9 +42,11 @@ const SeetuSchema = new Schema<ISeetu>(
       type: Number,
       min: [0, 'Minimum amount cannot be negative'],
       validate: {
-        validator: function (this: ISeetu, minAmount: number) {
-          if (this.maxAmount && minAmount) {
-            return minAmount <= this.maxAmount;
+        validator: function (minAmount: number) {
+          const doc = this as any;
+          // Only validate if both values exist
+          if (doc.maxAmount !== undefined && minAmount !== undefined) {
+            return minAmount <= doc.maxAmount;
           }
           return true;
         },
@@ -58,6 +62,11 @@ const SeetuSchema = new Schema<ISeetu>(
       ref: 'User',
       required: [true, 'Creator user ID is required'],
     },
+    archived: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
   },
   {
     timestamps: true, // Auto-generate createdAt and updatedAt
@@ -66,18 +75,21 @@ const SeetuSchema = new Schema<ISeetu>(
 
 // Pre-save hook to validate user exists before creating seetu
 SeetuSchema.pre('save', async function () {
-  const seetu = this as ISeetu;
-
-  if (seetu.isModified('createdBy') || seetu.isNew) {
+  if (this.isModified('createdBy') || this.isNew) {
     try {
-      const userExists = await User.findById(seetu.createdBy).select('_id');
+      const userExists = await User.findById(this.createdBy).select('_id');
 
       if (!userExists) {
-        const error = new Error(`User with ID ${seetu.createdBy} does not exist`);
+        const error = new Error(`User with ID ${this.createdBy} does not exist`);
         error.name = 'ValidationError';
         throw error;
       }
-    } catch {
+    } catch (err: any) {
+      // If it's already a validation error, re-throw it
+      if (err.name === 'ValidationError') {
+        throw err;
+      }
+      // Otherwise, create a new validation error
       const validationError = new Error('Invalid user ID format or database error');
       validationError.name = 'ValidationError';
       throw validationError;
@@ -85,14 +97,10 @@ SeetuSchema.pre('save', async function () {
   }
 });
 
-// Create index on createdBy for user's seetus lookup
-SeetuSchema.index({ createdBy: 1 });
-
-// Create index on dates for filtering by status (upcoming/open/closed)
-SeetuSchema.index({ openingDate: 1, closingDate: 1 });
-
-// Create index on closingDate for closed seetus queries
-SeetuSchema.index({ closingDate: -1 });
+// Create compound index for efficient queries
+SeetuSchema.index({ archived: 1, openingDate: -1 });
+SeetuSchema.index({ archived: 1, closingDate: -1 });
+SeetuSchema.index({ createdBy: 1, archived: 1 });
 
 const Seetu = models.Seetu || model<ISeetu>('Seetu', SeetuSchema);
 
