@@ -240,6 +240,30 @@ export async function updateUserPassword(userId: string, newPassword: string) {
   }
 }
 
+// Update a user's role by ID
+export async function updateUserRole(userId: string, isAdmin: boolean) {
+  try {
+    await connectToDatabase();
+
+    const updated = await User.findByIdAndUpdate(
+      userId,
+      { isAdmin },
+      { new: true }
+    );
+
+    if (!updated) return null;
+
+    return {
+      id: updated._id.toString(),
+      username: updated.username,
+      isAdmin: updated.isAdmin,
+    };
+  } catch (error) {
+    console.error('Update user role error:', error);
+    return null;
+  }
+}
+
 // Delete a user by ID
 export async function deleteUserById(userId: string) {
   try {
