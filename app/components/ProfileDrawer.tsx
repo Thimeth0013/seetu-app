@@ -118,7 +118,7 @@ export default function ProfileModal({ isOpen, onClose, username }: ProfileModal
         onClick={onClose}
       >
         <div 
-          className="relative w-full max-w-xl bg-white/60 rounded-3xl border border-slate-300 shadow-2xl mt-10 mb-20 animate-in slide-in-from-bottom duration-500"
+          className="relative w-full max-w-xl bg-white/60 rounded-t-3xl border border-slate-300 shadow-2xl mt-10 animate-in slide-in-from-bottom duration-500"
           onClick={(e) => e.stopPropagation()}
         >
 
