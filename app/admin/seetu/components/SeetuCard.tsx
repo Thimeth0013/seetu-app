@@ -60,18 +60,18 @@ export default function SeetuCard({ seetu, onUpdate }: Props) {
   };
 
   const statusColors = {
-    upcoming: 'bg-blue-50 text-blue-700 border-blue-100',
-    open: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-    closed: 'bg-slate-50 text-slate-500 border-slate-100',
-    archived: 'bg-rose-50 text-rose-700 border-rose-100',
+    upcoming: 'bg-blue-100 text-blue-700 border-blue-200',
+    open: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+    closed: 'bg-slate-100 text-slate-500 border-slate-200',
+    archived: 'bg-rose-100 text-rose-700 border-rose-200',
   };
 
   return (
-    <div className="bg-white border-2 border-slate-100 rounded-4xl p-6 shadow-sm mb-4">
+    <div className="bg-white border border-slate-300 rounded-4xl p-4 shadow-sm mb-4">
       {/* Header Area */}
-      <div className="flex justify-between items-start mb-0">
+      <div className="flex justify-between items-start">
         <div className="space-y-1">
-          <h3 className="text-xl font-bold text-slate-900 leading-tight">{seetu.title}</h3>
+          <h3 className="text-xl font-bold text-slate-900 leading-tight ml-1">{seetu.title}</h3>
 
         </div>
           <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${statusColors[seetu.status]}`}>
@@ -80,7 +80,7 @@ export default function SeetuCard({ seetu, onUpdate }: Props) {
       </div>
 
       {/* Data Section */}
-      <div className="grid grid-cols-2 gap-4 py-5 border-y border-slate-50 mb-2 ml-1">
+      <div className="grid grid-cols-2 gap-4 py-5 mb-2 ml-1">
         <div>
           <p className="text-xs text-slate-500 font-bold uppercase mb-1">Schedule</p>
           <p className="text-sm font-bold text-slate-700">
@@ -116,8 +116,8 @@ export default function SeetuCard({ seetu, onUpdate }: Props) {
       {/* FULL EDIT DRAWER */}
       {showEditDrawer && (
         <div className="fixed inset-0 z-100 flex items-end justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => setShowEditDrawer(false)} />
-          <div className="relative w-full max-w-xl bg-white rounded-t-[3rem] shadow-2xl flex flex-col max-h-[95vh] border-t-4 border-amber-400 animate-in slide-in-from-bottom duration-500">
+          <div className="absolute inset-0 bg-white/20 backdrop-blur-xs" onClick={() => setShowEditDrawer(false)} />
+          <div className="relative w-full max-w-xl bg-white rounded-t-[3rem] shadow-2xl flex flex-col max-h-[95vh] border-t-4 border-amber-300 animate-in slide-in-from-bottom duration-500">
             
             <div className="px-8 pt-8 pb-4 flex justify-between items-center">
               <h2 className="text-2xl font-serif font-bold text-slate-900">Edit Seetu Details</h2>

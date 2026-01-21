@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <main className="max-w-xl mx-auto">{children}</main>
 
       {/* Persistent Bottom Admin Nav - Essential for Mobile 50+ Users */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 px-6 py-4 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
+      <nav className="fixed bottom-0 rounded-t-3xl left-0 right-0 bg-slate-900 border-t border-slate-400 px-6 py-4 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.2)]">
         <div className="max-w-xl mx-auto flex justify-around items-center">
           {navItems.map((item) => {
             const isActive = pathname === item.href;

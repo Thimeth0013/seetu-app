@@ -55,10 +55,10 @@ export default function AdminSeetuPage() {
   return (
     <div className="min-h-screen bg-[#FDFDFD] pb-20">
       <header className="sticky top-0 z-40 bg-white/40 backdrop-blur-xl text-slate-900 shadow-xl rounded-b-4xl">
-        <div className="max-w-xl mx-auto px-6 py-6">
+        <div className="max-w-xl mx-auto px-6 py-4">
           <button 
             onClick={() => router.push('/')}
-            className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest mb-4 active:text-amber-400"
+            className="flex items-center gap-2 text-slate-500 text-xs font-bold uppercase tracking-widest mb-2 active:text-amber-400"
           >
             <ArrowLeft size={16} /> Exit Admin
           </button>
@@ -73,8 +73,8 @@ export default function AdminSeetuPage() {
                 showCreateForm ? 'bg-red-700 text-white' : 'bg-slate-800 text-white'
               }`}
             >
-              {showCreateForm ? <X size={24} /> : <Plus size={24} />}
-              <span>{showCreateForm ? 'Cancel Seetu' : 'New Seetu'}</span>
+              {showCreateForm ? <X size={20} /> : <Plus size={20} />}
+              <span>{showCreateForm ? 'Cancel' : 'Create'}</span>
             </button>
           </div>
         </div>

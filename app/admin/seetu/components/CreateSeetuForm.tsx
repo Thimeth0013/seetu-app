@@ -69,7 +69,7 @@ export default function CreateSeetuForm({ onCreated }: Props) {
   return (
     <div className="bg-white border-2 border-slate-300 rounded-[2.5rem] p-8 shadow-2xl relative">
       
-      <div className="flex items-center gap-3 mb-8 mt-2">
+      <div className="flex items-center gap-3 mb-4 mt-0 md-mt-2">
         <PlusCircle className="text-slate-900" size={28} />
         <h3 className="text-3xl font-serif font-bold text-slate-900 tracking-tight">
           New Seetu
@@ -85,10 +85,10 @@ export default function CreateSeetuForm({ onCreated }: Props) {
         )}
 
         {/* --- Inputs (Title, Dates, Amounts) --- */}
-        <div className="bg-slate-50 p-5 rounded-2xl border-2 border-slate-200">
-          <label className="block text-[11px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Group Title</label>
+        <div className="bg-slate-50 p-3 rounded-2xl border-2 border-slate-200">
+          <label className="block text-xs font-black text-slate-500 uppercase tracking-widest">Title</label>
           <input 
-            placeholder="e.g. Savings Group A" 
+            placeholder="e.g. January 2026" 
             value={title} 
             onChange={(e) => setTitle(e.target.value)} 
             className="w-full bg-transparent text-xl font-bold text-slate-900 outline-none"
@@ -96,22 +96,17 @@ export default function CreateSeetuForm({ onCreated }: Props) {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-slate-50 p-5 rounded-2xl border-2 border-slate-200">
-            <label className="block text-[11px] font-black text-emerald-600 uppercase mb-2 ml-1">Opening Date</label>
+          <div className="bg-slate-50 p-3 rounded-2xl border-2 border-slate-200">
+            <label className="block text-[11px] font-black text-emerald-600 uppercase mb-0 md:mb-2">Opening Date</label>
             <input type="date" value={openingDate} onChange={(e) => setOpeningDate(e.target.value)} className="w-full bg-transparent font-bold text-slate-900 outline-none" />
           </div>
-          <div className="bg-slate-50 p-5 rounded-2xl border-2 border-slate-200">
-            <label className="block text-[11px] font-black text-rose-600 uppercase mb-2 ml-1">Closing Date</label>
+          <div className="bg-slate-50 p-3 rounded-2xl border-2 border-slate-200">
+            <label className="block text-[11px] font-black text-rose-600 uppercase mb-0 md:mb-2">Closing Date</label>
             <input type="date" value={closingDate} onChange={(e) => setClosingDate(e.target.value)} className="w-full bg-transparent font-bold text-slate-900 outline-none" />
           </div>
-        </div>
-
-        <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-blue-50/50 p-5 rounded-2xl border-2 border-blue-100 flex items-center gap-3">
-
+          <div className="bg-blue-50/50 p-3 rounded-2xl border-2 border-blue-100 flex items-center gap-3">
               <div className="flex-1">
-                <span className="block text-[11px] font-black text-slate-800 uppercase mb-2 ml-1">Minimum</span>
+                <span className="block text-[11px] font-black text-slate-800 uppercase mb-0 md:mb-2">Minimum</span>
                 <input 
                   type="number" 
                   value={minAmount} 
@@ -124,9 +119,9 @@ export default function CreateSeetuForm({ onCreated }: Props) {
                 <ArrowDownWideNarrow size={20} />
               </div>
             </div>
-            <div className="bg-blue-50/50 p-5 rounded-2xl border-2 border-blue-100 flex items-center gap-3">
+            <div className="bg-blue-50/50 p-3 rounded-2xl border-2 border-blue-100 flex items-center gap-3">
               <div className="flex-1">
-                <span className="block text-[11px] font-black text-slate-800 uppercase mb-2 ml-1">Maximum</span>
+                <span className="block text-[11px] font-black text-slate-800 uppercase mb-0 md:mb-2">Maximum</span>
                 <input 
                   type="number" 
                   value={maxAmount} 
@@ -139,13 +134,12 @@ export default function CreateSeetuForm({ onCreated }: Props) {
                 <ArrowUpWideNarrow size={20} />
               </div>
             </div>
-          </div>
         </div>
 
         <button 
           type="submit"
           disabled={loading}
-          className="w-full bg-slate-900 text-white py-6 rounded-4xl font-black text-xl shadow-xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+          className="w-full bg-slate-900 text-white py-3 rounded-4xl font-black text-xl shadow-xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
         >
           {loading ? 'Creating...' : 'Create Seetu'}
           <ArrowRight size={22} className="text-amber-400" strokeWidth={3} />
