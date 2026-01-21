@@ -20,19 +20,19 @@ export default function InputModal({ isOpen, onClose, onSave, title, defaultValu
     <div className="fixed inset-0 z-200 flex items-center justify-center px-6 animate-in fade-in duration-200">
       <div className="absolute inset-0 bg-slate-100/40 backdrop-blur-md" onClick={onClose} />
       
-      <div className="relative w-full max-w-sm bg-slate-100 rounded-3xl p-8 shadow-2xl border border-slate-500 animate-in zoom-in duration-300">
+      <div className="relative w-full max-w-sm bg-slate-100 rounded-3xl p-6 shadow-2xl border border-slate-500 animate-in zoom-in duration-300">
         <h3 className="text-2xl font-serif font-bold text-slate-900 mb-6 flex items-center gap-2">
           <Edit3 size={24} className="text-amber-600" /> {title}
         </h3>
         
-        <div className="bg-white p-6 rounded-3xl border border-slate-300 mb-8">
-          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">{label}</label>
+        <div className="bg-white p-4 rounded-3xl border border-slate-300 mb-8">
+          <label className="block text-xs font-black text-slate-500 uppercase tracking-widest ml-1">{label}</label>
           <input 
             type={type}
             autoFocus
             value={val}
             onChange={(e) => setVal(e.target.value)}
-            className="w-full bg-transparent text-4xl font-black text-slate-900 focus:outline-none"
+            className="w-full bg-transparent text-3xl font-black text-slate-900 focus:outline-none"
           />
         </div>
 

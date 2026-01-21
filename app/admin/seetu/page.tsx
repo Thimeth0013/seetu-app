@@ -33,6 +33,9 @@ export default function AdminSeetuPage() {
       const res = await fetch(`/api/seetu?status=${filter === 'all' ? '' : filter}`);
       const data = await res.json();
       if (data.success) setSeetus(data.seetus);
+      // Sort by creation date (newest first) - assuming seetus have an id that increments
+      const sortedSeetus = (data.seetus || []).reverse();
+      setSeetus(sortedSeetus);
     } catch (err) {
       console.error('Fetch seetus failed:', err);
     }

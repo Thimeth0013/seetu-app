@@ -194,7 +194,7 @@ export default function UsersPage() {
                 )}
                 <button 
                   onClick={() => setResetPass({id: u.id, name: u.username})}
-                  className={`py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-all ${
+                  className={`py-4 rounded-2xl font-black text-xs uppercase tracking-tighter flex items-center justify-center gap-2 active:scale-95 transition-all ${
                     u.isAdmin ? 'col-span-2 bg-slate-900 text-white shadow-lg' : 'bg-white text-slate-900 border-2 border-slate-600'
                   }`}
                 >
